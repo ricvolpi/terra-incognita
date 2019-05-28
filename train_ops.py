@@ -12,7 +12,6 @@ import json
 from numpy.linalg import norm
 from scipy import misc
 from PIL import Image
-import vgg_preprocessing
 import skimage.transform
 import sklearn.preprocessing
 import pandas as pd
@@ -23,27 +22,21 @@ from search_ops import SearchOps
 import utils
 
 class TrainOps(object):
-
 	def __init__(self, model, exp_dir, run, arch):
-		
 		self.run = run
 		self.arch = arch
 		self.model = model
 		self.exp_dir = exp_dir
 		self.log_dir = os.path.join(self.exp_dir,'logs')
 		self.model_save_path = os.path.join(self.exp_dir,'models/'+str(self.run))
-		
 		self.data_dir = './CaltechCameraTraps/ECCV2018'
-
 		self.resnet_v1_50_ckpt = os.path.join('./resnet_v1_50.ckpt')
 		self.resnet_v1_101_ckpt = os.path.join('./resnet_v1_101.ckpt')
-
 		self.VGG_MEAN = [103.939, 116.779, 123.68]
 		self.RGB_MEAN = [self.VGG_MEAN[2], self.VGG_MEAN[1], self.VGG_MEAN[0]]
 
 		if not os.path.exists(self.log_dir):
 			os.makedirs(self.log_dir)
-	
 		if not os.path.exists(self.model_save_path):
 			os.makedirs(self.model_save_path)
 		
@@ -55,10 +48,7 @@ class TrainOps(object):
 
 		self.extract_all_metadata()
 
-		self.transf_ops = TransfOps()
-		self.search_ops = SearchOps()
-
-
+		
 	def extract_all_metadata(self):
 		
 		def extract_metadata(path_to_json):
@@ -108,7 +98,7 @@ class TrainOps(object):
 	
 		self.learning_rate = config.getfloat('MAIN_SETTINGS', 'learning_rate')
 
-
+		
 	def load_images(self, img_paths):
 
 		images = np.zeros((len(img_paths), self.model.img_size, self.model.img_size, 3))
@@ -116,18 +106,12 @@ class TrainOps(object):
 		for n,img_path in enumerate(img_paths):
 
 			img = Image.open(img_path)
-
 			img = img.resize((self.model.img_size, self.model.img_size), Image.ANTIALIAS)
-			img = np.array(img, dtype=float)
-				
+			img = np.array(img, dtype=float)		
 			img = np.expand_dims(img, axis=0)
-
 			if len(img.shape) == 3:
 				img = np.stack((img,img,img), axis=3)
-
 			images[n] = img
-
-		if self.arch == 'resnet_v1_50' or self.arch == 'resnet_v1_101':
 			images[:,:,:,0] -= self.RGB_MEAN[0]
 			images[:,:,:,1] -= self.RGB_MEAN[1]
 			images[:,:,:,2] -= self.RGB_MEAN[2]
