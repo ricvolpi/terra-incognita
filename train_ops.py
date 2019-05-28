@@ -150,10 +150,7 @@ class TrainOps(object):
 		self.model.mode='train'
 		self.model.build_model()
 		print 'Built'
-	        
-		transformations = [['identity']]
-		levels = [[None]]	
-
+	
 		with tf.Session(config=self.config) as sess:
 			tf.global_variables_initializer().run()
 
@@ -194,13 +191,12 @@ class TrainOps(object):
 					rand_idxs = np.random.permutation(train_images.shape[0])[:100]
 			
 					train_acc, train_loss = sess.run(fetches=[self.model.accuracy, self.model.loss], 
-														feed_dict={self.model.images: train_images[rand_idxs], 
-																self.model.labels: train_labels[rand_idxs],
-																self.model.is_training: False})
+									feed_dict={self.model.images: train_images[rand_idxs], 
+										self.model.labels: train_labels[rand_idxs],
+										self.model.is_training: False})
 
 					summary = sess.run(self.model.summary_op, feed_dict)
 					summary_writer.add_summary(summary, t)		
-
 
 					print ('Run: [%d] Step: [%d/%d] train_loss: [%.4f] train_acc: [%.4f]'%(int(self.run), t+1, self.train_iters, train_loss, train_acc))
 
@@ -274,15 +270,12 @@ class TrainOps(object):
 			restorer = tf.train.Saver(variables_to_restore)
 			restorer.restore(sess, os.path.join(self.model_save_path,'encoder'))
 				
-			print 'Calculating accuracy'
-		
+			print 'Calculating accuracy'		
 			target_accuracy, target_loss, _, _ = self.test_foo(test_images, test_labels, sess)
-		
 			print ('Target accuracy: [%.4f], Target loss: [%.4f]'%(target_accuracy, target_loss))
 	   
 
 if __name__=='__main__':
-
-	print 'To be implemented.'
+	pass
 
 
