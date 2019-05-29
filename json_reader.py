@@ -17,7 +17,7 @@ def extract_metadata(path_to_json):
 
 	return file_names, locations, labels, category_names, category_labels
 
-data_dir = '/data/rvolpi/CaltechCameraTraps/ECCV2018'
+data_dir = './CaltechCameraTraps/ECCV2018'
 
 all_file_names, all_locations, all_labels, all_category_names, all_category_labels = extract_metadata(os.path.join(data_dir,'annotations/CaltechCameraTrapsECCV18.json'))
 cis_test_file_names, cis_test_locations, cis_test_labels, cis_test_category_names, cis_test_category_labels = extract_metadata(os.path.join(data_dir,'annotations/cis_test_annotations.json'))
